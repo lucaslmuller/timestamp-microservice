@@ -1,10 +1,18 @@
 var http = require('http');
 var url = require('url');
+var express = require("express");
+var app = new express();
+var fs = require('fs');
+var path = require('path');
 
-var server = http.createServer(function (req, res) {
-  
+app.get("/", function(req, res){
+  res.writeHead(200, {"Content-Type": "text/html"});
+  res.end(fs.readFileSync('index.html'));
+});
+
+app.get("/:time", function(req, res){
   var urlObj = url.parse(req.url, true),
-      path = (urlObj.path).slice(1),
+      path = req.params.time,
       time,
       d,
       result = {
@@ -49,8 +57,6 @@ var server = http.createServer(function (req, res) {
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(result));
-  
-  
 });
 
-server.listen(process.env.PORT || 8080);
+app.listen(process.env.PORT || 8080);
